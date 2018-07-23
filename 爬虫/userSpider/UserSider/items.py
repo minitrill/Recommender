@@ -31,9 +31,13 @@ class userItem(scrapy.Item):
 
     following = scrapy.Field()
     follower = scrapy.Field()
-    
+
     archiveview = scrapy.Field()
     article = scrapy.Field()
+
+    video_num = scrapy.Field()
+
+    like_video_num = scrapy.Field()
 
     coins = scrapy.Field()
 

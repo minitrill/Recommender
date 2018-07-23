@@ -1,16 +1,18 @@
 import re
 import random
+import numpy as np
 import json
 import scrapy
+import time
 import requests
 from bs4 import BeautifulSoup
 from scrapy.http import Request, FormRequest
-from practice1.items import userItem
+from UserSider.items import userItem
 
 class Myspider(scrapy.Spider):
     """docstring for Myspider"""
 
-    name = 'practice1'
+    name = 'UserSider'
     allowed_domains = ['bilibili.com']
     bash_url = 'https://space.bilibili.com/ajax/member/GetInfo'
     head = {
@@ -19,7 +21,7 @@ class Myspider(scrapy.Spider):
         'Accept-Language': 'zh-CN,zh;q=0.9',
         'Host': 'space.bilibili.com',
         'Origin': 'https://space.bilibili.com',
-        'Referer': 'https://space.bilibili.com/%d/' % random.randint(1,1000),
+        'Referer': 'https://space.bilibili.com/%d/' % random.randint(10000, 50000),
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36'
     }
 
@@ -27,20 +29,31 @@ class Myspider(scrapy.Spider):
         
 
         # for userId in range(32000, 42000):
+        def LoadUserAgents(uafile):
+            uas = []
+            with open(uafile, 'rb') as uaf:
+                for ua in uaf.readlines():
+                    if ua:
+                        uas.append(ua.strip()[1:-1 - 1])
+            random.shuffle(uas)
+            return uas
 
 
-        body = {
-            'mid': '282994',
-            'csrf': 'null',
-        }
-        yield FormRequest(url=self.bash_url, headers=self.head,method='POST',callback=self.parse,formdata=body)
+        uas = LoadUserAgents("/home/cls/文档/crawl/LouisSpider/userSpider/UserSider/user_agents.txt")
+        for i in set(np.random.randint(100000, 500000,size=10000)):
+            body = {
+                'mid': str(i),
+                'csrf': 'null',
+            }
+            self.head['User-Agent'] = random.choice(uas)
+            yield FormRequest(url=self.bash_url, headers=self.head,method='POST',callback=self.parse,formdata=body, dont_filter=True)
 
     def parse(self, response):
 
         item = userItem()
         content = json.loads(response.text)
         data = content['data']
-        print('There are data of user: \n', data, '\n')
+        # print('There are data of user: \n', data, '\n')
 
         try:
             item['status'] = content['status'] if 'status' in data.keys() else 'False'
@@ -49,10 +62,7 @@ class Myspider(scrapy.Spider):
             item['sex'] = data['sex']
             item['rank'] = data['rank']
             item['face'] = data['face']
-            try:
-                item['regtime'] = time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(data['regtime']))
-            except:
-                item['regtime'] = 'miss'
+            item['regtime'] = data['regtime']
             item['spacesta'] = data['spacesta']
             item['birthday'] = data['birthday'] if 'birthday' in data.keys() else 'miss'
             item['sign'] = data['sign']
@@ -64,7 +74,7 @@ class Myspider(scrapy.Spider):
             item['toutu'] = data['toutu']
             item['toutuid'] = data['toutuId']
             item['coins'] = data['coins']
-            print('successful1 get userinfo:' + str(data['mid']))
+            # print('successful1 get userinfo:' + str(data['mid']), '\n' + item['regtime'])
         except Exception as e:
             print('error1:',item['mid'],e)
 
@@ -79,21 +89,31 @@ class Myspider(scrapy.Spider):
             }
             url1 = 'https://api.bilibili.com/x/relation/stat?vmid={}&jsonp=jsonp&callback=__jp3'.format(int(data['mid']))
             content1 = json.loads(requests.get(url=url1,headers=Header).text[6:-1])
-            print('Content1: \n',content1, '\n')
+            # print('Content1: \n',content1, '\n')
+            item['following'] = content1['data']['following']
+            item['follower'] = content1['data']['follower']
 
             url2 = 'https://api.bilibili.com/x/space/upstat?mid={}&jsonp=jsonp&callback=__jp4'.format(int(data['mid']))
             content2 = json.loads(requests.get(url=url2,headers=Header).text[6:-1])
-            print('Content1: \n',content2, '\n')
+            # print('Content1: \n',content2, '\n')
+            item['archiveview'] = content2['data']['archive']['view']
+            item['article'] = content2['data']['article']['view']
 
             url3 = 'https://api.bilibili.com/x/space/navnum?mid={}&jsonp=jsonp&callback=__jp2'.format(int(data['mid']))
             content3 = json.loads(requests.get(url=url3,headers=Header).text[6:-1])
-            print('Content1: \n',content3, '\n')
+            # print('Content1: \n',content3, '\n')
+            item['video_num'] = int(content3['data']['album']) + int(content3['data']['article']) + int(content3['data']['audio']) + int(content3['data']['video'])
 
             url4 = 'https://api.bilibili.com/x/space/fav/nav?mid={}&jsonp=jsonp&callback=__jp12'.format(int(data['mid']))
             content4 = json.loads(requests.get(url=url4,headers=Header).text[7:-1])
+            item['like_video_num'] = 0
+            for i in content4['data']['archive']:
+                item['like_video_num'] += int(i['cur_count'])
 
-            print('Content1: \n',content4, '\n')
+            # print('Content1: \n',content4, '\n')
         except Exception as e:
             print('Failed!!! The reason:\n', e)
 
+        print(item)
+        yield item
         
