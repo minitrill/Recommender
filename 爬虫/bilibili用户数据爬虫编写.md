@@ -167,6 +167,57 @@ data:{,…}
     topic:0
 ```
 
+#### 标签
+- Request URL: https://space.bilibili.com/ajax/member/getTags?mids={mid}
+- Request Method: GET
+- Request Header:  
+```
+    {
+        'Accept': 'application/json, text/plain, */*',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Accept-Language': 'zh-CN,zh;q=0.9',
+        'Host': 'space.bilibili.com',
+        'Referer': 'https://space.bilibili.com/%d/' mid,
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36'
+    }
+```
+- Data form:
+
+```
+data:[{mid: 814727, tags: ["宅舞"]}]
+    0:{mid: 814727, tags: ["宅舞"]}
+        mid:814727
+        tags:["宅舞"]
+```
+
+
+#### 子标签
+- Request URL: https://space.bilibili.com/ajax/tags/getSubList?mid={mid}
+- Request Method: GET
+- Request Header:  
+```
+    {
+        'Accept': 'application/json, text/plain, */*',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Accept-Language': 'zh-CN,zh;q=0.9',
+        'Host': 'space.bilibili.com',
+        'Referer': 'https://space.bilibili.com/%d/' mid,
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36'
+    }
+```
+- Data form:
+
+```
+data:{tags: [,…], count: 1}
+    count:1
+    tags:[,…]
+    0:
+        {name: "enolla"
+```
+
+
+
+
 ### 建议
 ----
 - 限制：
