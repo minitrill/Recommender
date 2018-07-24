@@ -11,7 +11,7 @@ import scrapy
 class userItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
-    status = scrapy.Field()
+    # status = scrapy.Field()
     mid = scrapy.Field()
     name = scrapy.Field()
     sex = scrapy.Field()
@@ -38,6 +38,10 @@ class userItem(scrapy.Item):
     video_num = scrapy.Field()
 
     like_video_num = scrapy.Field()
+
+    tag = scrapy.Field()
+
+    subtag = scrapy.Field()
 
     coins = scrapy.Field()
 

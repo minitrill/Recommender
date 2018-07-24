@@ -40,7 +40,7 @@ class Myspider(scrapy.Spider):
 
 
         uas = LoadUserAgents("/home/cls/文档/crawl/LouisSpider/userSpider/UserSider/user_agents.txt")
-        for i in set(np.random.randint(100000, 500000,size=10000)):
+        for i in set(np.random.randint(100000, 399999,size=10000)):
             body = {
                 'mid': str(i),
                 'csrf': 'null',
@@ -56,7 +56,7 @@ class Myspider(scrapy.Spider):
         # print('There are data of user: \n', data, '\n')
 
         try:
-            item['status'] = content['status'] if 'status' in data.keys() else 'False'
+            # item['status'] = content['status'] if 'status' in data.keys() else 'False'
             item['mid'] = data['mid']
             item['name'] = data['name']
             item['sex'] = data['sex']
@@ -87,6 +87,7 @@ class Myspider(scrapy.Spider):
                 'Referer': 'https://space.bilibili.com/%d/' % int(data['mid']),
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36'
             }
+            Header['User-Agent'] = self.head['User-Agent']
             url1 = 'https://api.bilibili.com/x/relation/stat?vmid={}&jsonp=jsonp&callback=__jp3'.format(int(data['mid']))
             content1 = json.loads(requests.get(url=url1,headers=Header).text[6:-1])
             # print('Content1: \n',content1, '\n')
@@ -109,6 +110,25 @@ class Myspider(scrapy.Spider):
             item['like_video_num'] = 0
             for i in content4['data']['archive']:
                 item['like_video_num'] += int(i['cur_count'])
+
+            url5 = 'https://space.bilibili.com/ajax/member/getTags?mids={}'.format(int(data['mid']))
+            content5 = json.loads(requests.get(url=url5,headers=self.head).text)
+            item['tag'] = ''
+            for i in content5['data']:
+                for s in i['tags']:
+                    if(len(item['tag']) == 0):
+                        item['tag'] += s
+                    else:
+                        item['tag'] += ('|' + s)
+
+            url6 = 'https://space.bilibili.com/ajax/tags/getSubList?mid={}'.format(int(data['mid']))
+            content6 = json.loads(requests.get(url=url6,headers=self.head).text)
+            item['subtag'] = ''
+            for i in content6['data']['tags']:
+                if(len(item['subtag']) == 0):
+                    item['subtag'] += i['name']
+                else:
+                    item['subtag'] += ('|' + i['name'])
 
             # print('Content1: \n',content4, '\n')
         except Exception as e:
