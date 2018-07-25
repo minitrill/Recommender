@@ -167,6 +167,58 @@ data:{,…}
     topic:0
 ```
 
+#### 每个收藏信息
+- Request URL: https://api.bilibili.com/x/v2/fav/video?vmid=176389292&ps=30&fid=1345718&tid=0&keyword=&pn=1&order=fav_time&jsonp=jsonp&callback=__jp16
+- Request Method: GET
+- Request Header:  
+```
+    {
+        'Accept': '*/*',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Accept-Language': 'zh-CN,zh;q=0.9',
+        'Host': 'api.bilibili.com',
+        'Referer': 'https://space.bilibili.com/%d/' mid,
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36'
+    }
+```
+
+
+```
+data:{seid: "3825081278137739842", page: 1, pagesize: 30, pagecount: 1, total: 14, suggest_keyword: "",…}
+    archives:[{aid: 12561021, videos: 72, tid: 39, tname: "演讲• 公开课", copyright: 2,…},…]
+        0:{aid: 12561021, videos: 72, tid: 39, tname: "演讲• 公开课", copyright: 2,…}
+        1:{aid: 13383754, videos: 19, tid: 39, tname: "演讲• 公开课", copyright: 2,…}
+        2:{aid: 13153048, videos: 25, tid: 39, tname: "演讲• 公开课", copyright: 1,…}
+        3:{aid: 13260183, videos: 16, tid: 39, tname: "演讲• 公开课", copyright: 2,…}
+        4:{aid: 12532910, videos: 15, tid: 39, tname: "演讲• 公开课", copyright: 2,…}
+        5:{aid: 9770302, videos: 25, tid: 39, tname: "演讲• 公开课", copyright: 2,…}
+        6:{aid: 10590361, videos: 39, tid: 39, tname: "演讲• 公开课", copyright: 2,…}
+        7:{aid: 9770190, videos: 28, tid: 39, tname: "演讲• 公开课", copyright: 2,…}
+        8:{aid: 12044968, videos: 1, tid: 39, tname: "演讲• 公开课", copyright: 2,…}
+        9:{aid: 9688898, videos: 1, tid: 39, tname: "演讲• 公开课", copyright: 2,…}
+        10:{aid: 12211434, videos: 3, tid: 39, tname: "演讲• 公开课", copyright: 2,…}
+        11:{aid: 9691070, videos: 1, tid: 39, tname: "演讲• 公开课", copyright: 2,…}
+        12:{aid: 11574509, videos: 17, tid: 39, tname: "演讲• 公开课", copyright: 2,…}
+        13:{aid: 9806881, videos: 11, tid: 39, tname: "演讲• 公开课", copyright: 2,…}
+    fid:1345718
+    keyword:""
+    mid:176389292
+    order:"fav_time"
+    page:1
+    pagecount:1
+    pagesize:30
+    seid:"3825081278137739842"
+    suggest_keyword:""
+    tid:0
+    tlist:[{tid: 36, name: "科技", count: 14}]
+        0:{tid: 36, name: "科技", count: 14}
+        count:14
+        name:"科技"
+    tid:36
+    total:14
+```
+
+
 #### 标签
 - Request URL: https://space.bilibili.com/ajax/member/getTags?mids={mid}
 - Request Method: GET

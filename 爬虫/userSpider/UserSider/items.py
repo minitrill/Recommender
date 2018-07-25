@@ -44,7 +44,8 @@ class userItem(scrapy.Item):
     subtag = scrapy.Field()
 
     coins = scrapy.Field()
-
+    
+    fid_list = scrapy.Field()
 
 class userFollowItem(scrapy.Item):
 

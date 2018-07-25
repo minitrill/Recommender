@@ -10,8 +10,8 @@ import sys
 
 PREFIX = 'user'
 POSTFIX = '.txt'
-FILENUM = 5
-FILEPATH = '/home/cls/文档/crawl/LouisSpider/userSpider/data/'
+FILENUM = 10
+FILEPATH = '/home/ubuntu/userSpider/data/'
 MAXIMUN = 10000
 
 class UserSiderPipeline(object):
@@ -29,7 +29,7 @@ class UserSiderPipeline(object):
                 f.close()
                 if(num < MAXIMUN):
                     return filename, lines, num
-        return None, None
+        return None, None, None
 
     def process_item(self, item, spider):
         try:
@@ -50,6 +50,12 @@ class UserSiderPipeline(object):
                     f.write(line)
                 f.close()
 
+            with open(FILEPATH + 'fid_list.txt', 'a') as f1:
+                for fid in item['fid_list']:
+                    s = '{} {}\n'.format(item['mid'], fid)
+                    f1.write(s)
+                f1.close()
+
             # conn = py.connect(host='127.0.0.1',user='root',passwd='123',db='bilibili',charset='utf8')
             # cursor = conn.cursor()
             
@@ -68,8 +74,9 @@ class UserSiderPipeline(object):
             # conn.commit()
             # cursor.close()
             # conn.close()
-            if(self.fnum > MAXIMUN):
-                self.filename, self.file, self.fnum = self.check_full()
+            if(self.fnum >= MAXIMUN):
+                self.lines = None
+                self.filename, self.lines, self.fnum = self.check_full()
 
         except Exception as e:
             print(e,item['mid'])

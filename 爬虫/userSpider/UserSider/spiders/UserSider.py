@@ -39,8 +39,8 @@ class Myspider(scrapy.Spider):
             return uas
 
 
-        uas = LoadUserAgents("/home/cls/文档/crawl/LouisSpider/userSpider/UserSider/user_agents.txt")
-        for i in set(np.random.randint(100000, 399999,size=10000)):
+        uas = LoadUserAgents("/home/ubuntu/userSpider/UserSider/user_agents.txt")
+        for i in set(np.random.randint(100000, 599999,size=500000)):
             body = {
                 'mid': str(i),
                 'csrf': 'null',
@@ -108,8 +108,10 @@ class Myspider(scrapy.Spider):
             url4 = 'https://api.bilibili.com/x/space/fav/nav?mid={}&jsonp=jsonp&callback=__jp12'.format(int(data['mid']))
             content4 = json.loads(requests.get(url=url4,headers=Header).text[7:-1])
             item['like_video_num'] = 0
+            item['fid_list'] = []
             for i in content4['data']['archive']:
                 item['like_video_num'] += int(i['cur_count'])
+                item['fid_list'].append(int(i['fid']))
 
             url5 = 'https://space.bilibili.com/ajax/member/getTags?mids={}'.format(int(data['mid']))
             content5 = json.loads(requests.get(url=url5,headers=self.head).text)
@@ -130,10 +132,11 @@ class Myspider(scrapy.Spider):
                 else:
                     item['subtag'] += ('|' + i['name'])
 
+            yield item
+
             # print('Content1: \n',content4, '\n')
         except Exception as e:
             print('Failed!!! The reason:\n', e)
 
         print(item)
-        yield item
         
